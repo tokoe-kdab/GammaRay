@@ -549,6 +549,9 @@ if((Qt5Test_FOUND OR QT_QTTEST_FOUND) AND NOT CMAKE_CROSSCOMPILING)
 endif()
 add_subdirectory(plugins)
 add_subdirectory(resources)
+if(NOT GAMMARAY_PROBE_ONLY_BUILD)
+  add_subdirectory(multibuild)
+endif()
 add_subdirectory(docs) # needs to go last, so see all installed headers for the API docs
 
 set(LICENSE_FILE "LICENSE.GPL.txt")
