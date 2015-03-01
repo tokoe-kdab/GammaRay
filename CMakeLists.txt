@@ -603,12 +603,14 @@ install(FILES
   DESTINATION ${CMAKECONFIG_INSTALL_DIR}
 )
 
+if(NOT GAMMARAY_STATIC_PROBE) # FIXME: this should still be possible...
 install(
   EXPORT GammaRayTargets
   DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
   FILE GammaRayTarget.cmake
 #     NAMESPACE GammaRay::
 )
+endif()
 
 #CPACK: General Settings
 set(CPACK_GENERATOR "TBZ2")
