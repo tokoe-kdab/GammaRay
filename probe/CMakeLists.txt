@@ -31,7 +31,7 @@ if(APPLE) # DYLD_INSERT_LIBRARIES only works with real shared libraries, not mod
   add_library(gammaray_probe SHARED ${gammaray_probe_srcs})
   set_target_properties(gammaray_probe PROPERTIES INSTALL_RPATH "@loader_path/../../../Frameworks")
 else()
-  add_library(gammaray_probe MODULE ${gammaray_probe_srcs})
+  add_library(gammaray_probe ${GAMMARAY_PLUGIN_TYPE} ${gammaray_probe_srcs})
 endif()
 target_link_libraries(gammaray_probe
   gammaray_core

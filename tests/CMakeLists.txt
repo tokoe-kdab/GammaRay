@@ -1,5 +1,9 @@
 add_subdirectory(shared)
 
+if(NOT GAMMARAY_STATIC_PROBE) # already in core for static builds
+  set(model_test_src ${CMAKE_SOURCE_DIR}/3rdparty/qt/modeltest.cpp)
+endif()
+
 ### BENCH SUITE
 
 if(Qt5Widgets_FOUND OR QT_QTGUI_FOUND)
@@ -137,7 +141,7 @@ add_executable(widgettest
   widgettest.cpp
   ../probe/probecreator.cpp
   ../probe/hooks.cpp
-    ${CMAKE_SOURCE_DIR}/3rdparty/qt/modeltest.cpp
+  ${model_test_src}
 )
 target_link_libraries(widgettest gammaray_core ${QT_QTTEST_LIBRARIES} ${QT_QTGUI_LIBRARIES})
 
@@ -187,7 +191,7 @@ add_test(NAME propertyadaptortest COMMAND propertyadaptortest)
 
 add_executable(propertymodeltest
   propertymodeltest.cpp
-  ${CMAKE_SOURCE_DIR}/3rdparty/qt/modeltest.cpp
+  ${model_test_src}
 )
 target_link_libraries(propertymodeltest gammaray_core ${QT_QTTEST_LIBRARIES} gammaray_shared_test_data)
 add_test(NAME propertymodeltest COMMAND propertymodeltest)
@@ -225,7 +229,7 @@ set(quickinspectortest_srcs
   ../probe/hooks.cpp
   ../plugins/quickinspector/quickinspectorinterface.cpp
   ../plugins/quickinspector/transferimage.cpp
-    ${CMAKE_SOURCE_DIR}/3rdparty/qt/modeltest.cpp
+  ${model_test_src}
 )
 qt4_add_resources(quickinspectortest_srcs quickinspectortest.qrc)
 add_executable(quickinspectortest ${quickinspectortest_srcs})
