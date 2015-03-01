@@ -26,6 +26,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "config-gammaray.h"
 #include "pluginmanager.h"
 #include "paths.h"
 
@@ -52,9 +53,13 @@ PluginManagerBase::~PluginManagerBase()
 
 QStringList PluginManagerBase::pluginPaths() const
 {
+#ifndef GAMMARAY_STATIC_PROBE
   QStringList pluginPaths;
   pluginPaths.push_back(Paths::currentPluginsPath());
   return pluginPaths;
+#else
+  return QStringList();
+#endif
 }
 
 QStringList PluginManagerBase::pluginFilter() const
