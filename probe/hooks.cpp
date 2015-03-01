@@ -172,3 +172,8 @@ extern "C" Q_DECL_EXPORT void gammaray_probe_inject()
   // make it possible to re-attach
   new ProbeCreator(ProbeCreator::CreateAndFindExisting);
 }
+
+extern "C" Q_DECL_EXPORT void gammaray_install_hooks()
+{
+  Hooks::installHooks();
+}

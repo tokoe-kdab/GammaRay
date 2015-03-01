@@ -50,6 +50,9 @@ extern Q_DECL_EXPORT void gammaray_removeObject(QObject* obj);
 /** Entry point for runtime attaching. */
 extern Q_DECL_EXPORT void gammaray_probe_inject();
 
+/** Entry point for static injections. */
+extern Q_DECL_EXPORT void gammaray_install_hooks();
+
 }
 
 extern Q_DECL_EXPORT const char *gammaray_flagLocation(const char *method);
