@@ -14,11 +14,14 @@ macro(gammaray_add_plugin _target_name _desktop_file)
   endif()
   set(_build_target_dir "${PROJECT_BINARY_DIR}/${PROBE_PLUGIN_INSTALL_DIR}")
 
-  add_library(${_target_name} MODULE ${ARGN})
+  add_library(${_target_name} ${GAMMARAY_PLUGIN_TYPE} ${ARGN})
   set_target_properties(${_target_name} PROPERTIES
     PREFIX ""
     LIBRARY_OUTPUT_DIRECTORY ${_build_target_dir}
   )
+  if(GAMMARAY_STATIC_PROBE)
+    set_target_properties(${_target_name} PROPERTIES COMPILE_DEFINITIONS QT_STATICPLUGIN)
+  endif()
 
   if(APPLE)
     set_target_properties(${_target_name} PROPERTIES INSTALL_RPATH "@loader_path/../../../Frameworks")

@@ -43,21 +43,38 @@
 
 using namespace GammaRay;
 
-PluginInfo::PluginInfo() :
-    m_remoteSupport(true),
-    m_hidden(false)
+PluginInfo::PluginInfo()
 {
+  init();
 }
 
-PluginInfo::PluginInfo(const QString& path) :
-    m_remoteSupport(true),
-    m_hidden(false)
+PluginInfo::PluginInfo(const QString& path)
 {
+    init();
     if (QLibrary::isLibrary(path)) {
         initFromJSON(path);
     } else if (path.endsWith(QLatin1String(".desktop"))) {
         initFromDesktopFile(path);
     }
+}
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+PluginInfo::PluginInfo(const QStaticPlugin &staticPlugin)
+{
+    init();
+    m_staticPlugin = staticPlugin;
+    initFromJSON(staticPlugin.metaData());
+}
+#endif
+
+void PluginInfo::init()
+{
+    m_remoteSupport = true;
+    m_hidden = false;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+    m_staticPlugin.instance = Q_NULLPTR;
+    m_staticPlugin.rawMetaData = Q_NULLPTR;
+#endif
 }
 
 QString PluginInfo::path() const
@@ -97,7 +114,26 @@ bool PluginInfo::isHidden() const
 
 bool PluginInfo::isValid() const
 {
-    return !m_path.isEmpty() && !m_interface.isEmpty();
+    return (isStatic() || !m_path.isEmpty()) && !m_interface.isEmpty();
+}
+
+bool PluginInfo::isStatic() const
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+    return m_staticPlugin.instance && m_staticPlugin.rawMetaData;
+#else
+    return false;
+#endif
+}
+
+QObject* PluginInfo::staticInstance() const
+{
+  Q_ASSERT(isStatic());
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+  return m_staticPlugin.instance();
+#else
+  return 0;
+#endif
 }
 
 void PluginInfo::initFromJSON(const QString& path)
@@ -105,7 +141,16 @@ void PluginInfo::initFromJSON(const QString& path)
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     const QPluginLoader loader(path);
     const QJsonObject metaData = loader.metaData();
+    initFromJSON(metaData);
+    m_path = path;
+#else
+    Q_UNUSED(path);
+#endif
+}
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+void PluginInfo::initFromJSON(const QJsonObject &metaData)
+{
     m_interface = metaData.value("IID").toString();
     const QJsonObject customData = metaData.value("MetaData").toObject();
 
@@ -118,12 +163,8 @@ void PluginInfo::initFromJSON(const QString& path)
     m_supportedTypes.reserve(types.size());
     for (auto it = types.constBegin(); it != types.constEnd(); ++it)
       m_supportedTypes.push_back((*it).toString());
-
-    m_path = path;
-#else
-    Q_UNUSED(path);
-#endif
 }
+#endif
 
 void PluginInfo::initFromDesktopFile(const QString& path)
 {
