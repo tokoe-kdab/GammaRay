@@ -55,5 +55,24 @@ target_link_libraries(objectreparenttest ${QT_QTCORE_LIBRARIES})
 
 if(GAMMARAY_STATIC_PROBE)
   add_executable(staticinjectiontest staticinjectiontest.cpp)
-  target_link_libraries(staticinjectiontest gammaray_probe Qt5::Widgets gammaray_widgetinspector_plugin)
+  target_link_libraries(staticinjectiontest
+    gammaray_probe
+    Qt5::Widgets
+    gammaray_actioninspector_plugin
+    gammaray_codecbrowser_plugin
+    gammaray_fontbrowser_plugin
+    gammaray_sceneinspector_plugin
+    gammaray_selectionmodelinspector_plugin
+    gammaray_signalmonitor
+    gammaray_statemachineviewer_plugin
+    gammaray_styleinspector_plugin
+    gammaray_timertop_plugin
+    gammaray_translatorinspector
+    gammaray_widgetinspector_plugin
+
+#    gammaray_bluetooth
+#    gammaray_qmlsupport
+#    gammaray_quickinspector
+#    gammaray_webinspector_plugin
+  )
 endif()

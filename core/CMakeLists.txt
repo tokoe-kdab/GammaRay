@@ -152,3 +152,6 @@ ecm_generate_pri_file(BASE_NAME GammaRayCore
 )
 
 install(FILES ${PRI_FILENAME} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
+if(GAMMARAY_STATIC_PROBE)
+  gammaray_install_headers(staticprobe.h)
+endif()
