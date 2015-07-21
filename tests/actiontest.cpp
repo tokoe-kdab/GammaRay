@@ -47,7 +47,7 @@ private:
     void createProbe()
     {
         Paths::setRelativeRootPath(GAMMARAY_INVERSE_BIN_DIR);
-        qputenv("GAMMARAY_ProbePath", Paths::currentProbePath().toUtf8());
+        qputenv("GAMMARAY_RootPath", Paths::rootPath().toUtf8());
         Hooks::installHooks();
         Probe::startupHookReceived();
         new ProbeCreator(ProbeCreator::CreateOnly);

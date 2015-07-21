@@ -51,7 +51,7 @@ void setRootPath(const QString& rootPath)
   Q_ASSERT(QDir(rootPath).exists());
   Q_ASSERT(QDir(rootPath).isAbsolute());
 
-  s_rootPath = rootPath;
+  s_rootPath = QFileInfo(rootPath).absoluteFilePath();
 }
 
 void setRelativeRootPath(const char* relativeRootPath)
