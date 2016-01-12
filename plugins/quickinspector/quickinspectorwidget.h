@@ -36,6 +36,7 @@
 
 #include <QWidget>
 #include <QVariant>
+#include <QSettings>
 
 class QTimer;
 class QLabel;
@@ -71,9 +72,10 @@ class QuickInspectorWidget : public QWidget
     void itemSelectionChanged(const QItemSelection &selection);
     void requestRender();
     void setFeatures(GammaRay::QuickInspectorInterface::Features features);
-    void setSplitterSizes();
     void itemModelDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
     void itemContextMenu(const QPoint &pos);
+    void loadUiState();
+    void saveUiState();
 
   private:
     QScopedPointer<Ui::QuickInspectorWidget> ui;
@@ -82,6 +84,7 @@ class QuickInspectorWidget : public QWidget
     QTimer *m_renderTimer;
     bool m_sceneChangedSinceLastRequest;
     bool m_waitingForImage;
+    QSettings m_uiStateSettings;
 };
 
 class QuickInspectorUiFactory : public QObject, public StandardToolUiFactory<QuickInspectorWidget>

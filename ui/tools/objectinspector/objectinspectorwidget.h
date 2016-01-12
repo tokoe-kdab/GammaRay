@@ -43,6 +43,9 @@
 
 #include <common/objectbroker.h>
 
+#include <QSettings>
+
+
 class QItemSelection;
 
 namespace GammaRay {
@@ -66,9 +69,12 @@ class ObjectInspectorWidget : public QWidget
 
   private slots:
     void objectSelectionChanged(const QItemSelection &selection);
+    void loadUiState();
+    void saveUiState();
 
   private:
     QScopedPointer<Ui::ObjectInspectorWidget> ui;
+    QSettings m_uiStateSettings;
 };
 
 class ObjectInspectorFactory : public ToolUiFactory {

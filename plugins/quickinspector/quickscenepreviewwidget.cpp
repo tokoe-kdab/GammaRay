@@ -29,6 +29,7 @@
 #include "quickscenepreviewwidget.h"
 #include "quickinspectorinterface.h"
 
+#include <QApplication>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QAction>
@@ -52,7 +53,6 @@ QuickScenePreviewWidget::QuickScenePreviewWidget(QuickInspectorInterface *inspec
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   setMouseTracking(true);
   setAttribute(Qt::WA_OpaquePaintEvent);
-  setMinimumSize(QSize(400, 300));
 
 
   // Background
@@ -205,6 +205,11 @@ void QuickScenePreviewWidget::resizeEvent(QResizeEvent *e)
 
     m_x += 0.5 * (e->size().width() - e->oldSize().width());
     m_y += 0.5 * (e->size().height() - e->oldSize().height());
+}
+
+QSize QuickScenePreviewWidget::minimumSizeHint() const
+{
+    return QSize(400, 300);
 }
 
 void QuickScenePreviewWidget::drawGeometry(QPainter* p)

@@ -42,7 +42,8 @@ using namespace GammaRay;
 
 ObjectInspectorWidget::ObjectInspectorWidget(QWidget *parent)
   : QWidget(parent),
-    ui(new Ui::ObjectInspectorWidget)
+    ui(new Ui::ObjectInspectorWidget),
+    m_uiStateSettings("KDAB", "GammaRay")
 {
   ui->setupUi(this);
   ui->objectPropertyWidget->setObjectBaseName(QStringLiteral("com.kdab.GammaRay.ObjectInspector"));
@@ -63,6 +64,10 @@ ObjectInspectorWidget::ObjectInspectorWidget(QWidget *parent)
                               Qt::QueuedConnection,
                               Q_ARG(QString, QStringLiteral("Object")));
   }
+
+  m_uiStateSettings.beginGroup("UiState/ObjectInspector");
+  connect(ui->mainSplitter, SIGNAL(splitterMoved(int, int)), this, SLOT(saveUiState()));
+  loadUiState();
 }
 
 ObjectInspectorWidget::~ObjectInspectorWidget()
@@ -75,4 +80,14 @@ void ObjectInspectorWidget::objectSelectionChanged(const QItemSelection& selecti
     return;
   const QModelIndex index = selection.first().topLeft();
   ui->objectTreeView->scrollTo(index);
+}
+
+void ObjectInspectorWidget::loadUiState()
+{
+  ui->mainSplitter->restoreState(m_uiStateSettings.value("mainSplitterState", "").toByteArray());
+}
+
+void ObjectInspectorWidget::saveUiState()
+{
+  m_uiStateSettings.setValue("mainSplitterState", ui->mainSplitter->saveState());
 }

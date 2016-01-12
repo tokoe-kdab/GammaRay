@@ -56,6 +56,7 @@
 #include <QRectF>
 #include <QtCore/qglobal.h>
 #include <QPropertyAnimation>
+#include <QDebug>
 
 using namespace GammaRay;
 
@@ -79,7 +80,8 @@ QuickInspectorWidget::QuickInspectorWidget(QWidget *parent)
     ui(new Ui::QuickInspectorWidget),
     m_renderTimer(new QTimer(this)),
     m_sceneChangedSinceLastRequest(false),
-    m_waitingForImage(false)
+    m_waitingForImage(false),
+    m_uiStateSettings("KDAB", "GammaRay")
 {
   ui->setupUi(this);
 
@@ -128,6 +130,8 @@ QuickInspectorWidget::QuickInspectorWidget(QWidget *parent)
 
   ui->previewTreeSplitter->addWidget(m_previewWidget);
 
+  qDebug() << "++++++++++++++++++++" << ui->itemTreeView->model()->rowCount();
+
   m_renderTimer->setInterval(100);
   m_renderTimer->setSingleShot(true);
   connect(m_renderTimer, SIGNAL(timeout()), this, SLOT(requestRender()));
@@ -139,18 +143,15 @@ QuickInspectorWidget::QuickInspectorWidget(QWidget *parent)
           this, SLOT(itemContextMenu(QPoint)));
 
   m_interface->checkFeatures();
+
+  m_uiStateSettings.beginGroup("UiState/QuickInspector");
+  connect(ui->mainSplitter, SIGNAL(splitterMoved(int, int)), this, SLOT(saveUiState()));
+  connect(ui->previewTreeSplitter, SIGNAL(splitterMoved(int, int)), this, SLOT(saveUiState()));
+  loadUiState();
 }
 
 QuickInspectorWidget::~QuickInspectorWidget()
 {
-}
-
-void QuickInspectorWidget::setSplitterSizes()
-{
-  ui->previewTreeSplitter->setSizes(
-    QList<int>()
-      << (ui->previewTreeSplitter->height() - ui->previewTreeSplitter->handleWidth()) / 2
-      << (ui->previewTreeSplitter->height() - ui->previewTreeSplitter->handleWidth()) / 2);
 }
 
 void QuickInspectorWidget::sceneChanged()
@@ -282,4 +283,32 @@ void GammaRay::QuickInspectorWidget::itemContextMenu(const QPoint& pos)
         break;
     }
   }
+}
+
+void QuickInspectorWidget::loadUiState()
+{
+  QByteArray mainSplitterState = m_uiStateSettings.value("mainSplitterState", "").toByteArray();
+  QByteArray previewTreeSplitterState = m_uiStateSettings.value("previewTreeSplitterState", "").toByteArray();
+
+  if (!mainSplitterState.isEmpty()){
+    ui->mainSplitter->restoreState(mainSplitterState);
+  } else{
+     ui->mainSplitter->setSizes(QList<int>()
+          << (ui->mainSplitter->width() - ui->mainSplitter->handleWidth()) / 2
+          << (ui->mainSplitter->width() - ui->mainSplitter->handleWidth()) / 2);
+  }
+
+  if (!previewTreeSplitterState.isEmpty()) {
+    ui->previewTreeSplitter->restoreState(previewTreeSplitterState);
+  } else {
+     ui->previewTreeSplitter->setSizes(QList<int>()
+          << (ui->previewTreeSplitter->height() - ui->previewTreeSplitter->handleWidth()) / 2
+          << (ui->previewTreeSplitter->height() - ui->previewTreeSplitter->handleWidth()) / 2);
+  }
+}
+
+void QuickInspectorWidget::saveUiState()
+{
+  m_uiStateSettings.setValue("mainSplitterState", ui->mainSplitter->saveState());
+  m_uiStateSettings.setValue("previewTreeSplitterState", ui->previewTreeSplitter->saveState());
 }

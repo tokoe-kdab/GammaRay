@@ -64,6 +64,8 @@ class QuickScenePreviewWidget : public QWidget
 
     void setZoom(qreal zoom);
 
+    QSize minimumSizeHint() const Q_DECL_OVERRIDE;
+
   private Q_SLOTS:
     void setZoomFromCombobox(int index);
     void visualizeActionTriggered(bool checked);
