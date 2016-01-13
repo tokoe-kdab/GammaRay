@@ -41,6 +41,7 @@
 #include "util.h"
 
 #include <3rdparty/qt/modeltest.h>
+#include <3rdparty/backtrace-utils/backtrace.h>
 
 #include "remote/server.h"
 #include "remote/remotemodelserver.h"
@@ -649,6 +650,11 @@ void Probe::objectFullyConstructed(QObject *obj)
   m_metaObjectTreeModel->objectAdded(obj);
 
   m_toolModel->objectAdded(obj);
+
+  BacktraceUtils::Backtrace *bt = new BacktraceUtils::Backtrace();
+  bt->generate();
+  m_backtraceCache.addBacktrace(bt);
+  m_constructionBacktracesForObjects.insert(obj, bt);
 
   emit objectCreated(obj);
 }

@@ -63,12 +63,18 @@ static QObject* createExtension(const QString &name, QObject *parent)
 class ObjectInspectorWidget : public QWidget
 {
   Q_OBJECT
+
+  enum Action {
+      NavigateToCode
+  };
+
   public:
     explicit ObjectInspectorWidget(QWidget *parent = 0);
     ~ObjectInspectorWidget();
 
   private slots:
     void objectSelectionChanged(const QItemSelection &selection);
+    void itemContextMenu(const QPoint &pos);
     void loadUiState();
     void saveUiState();
 

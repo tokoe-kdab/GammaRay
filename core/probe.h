@@ -32,6 +32,8 @@
 #include "gammaray_core_export.h"
 #include "probeinterface.h"
 #include "signalspycallbackset.h"
+#include "tools/messagehandler/backtrace.h"
+
 
 #include <QObject>
 #include <QQueue>
@@ -84,6 +86,9 @@ class GAMMARAY_CORE_EXPORT Probe : public QObject, public ProbeInterface
     void selectObject(QObject* object, const QPoint& pos = QPoint()) Q_DECL_OVERRIDE;
     void selectObject(void* object, const QString& typeName) Q_DECL_OVERRIDE;
     void registerSignalSpyCallbackSet(const SignalSpyCallbackSet& callbacks) Q_DECL_OVERRIDE;
+
+    struct SourceLocation { QString filePath; int lineNumber, columnNumber; };
+    SourceLocation objectCreationSourceLocation(QObject *object);
 
     QObject *window() const;
     void setWindow(QObject *window);
@@ -191,6 +196,8 @@ class GAMMARAY_CORE_EXPORT Probe : public QObject, public ProbeInterface
     QVector<QObject*> m_globalEventFilters;
     QVector<SignalSpyCallbackSet> m_signalSpyCallbacks;
     SignalSpyCallbackSet m_previousSignalSpyCallbackSet;
+
+    QHash<QObject *, Backtrace> m_constructionBacktracesForObjects;
 };
 
 }

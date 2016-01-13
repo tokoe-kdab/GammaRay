@@ -54,6 +54,9 @@ namespace ObjectModel {
     enum Role {
       // Qt4 uses 32, Qt5 256, for Qt::UserRole - use the latter globally to allow combining Qt4/5 client/servers.
       ObjectRole = 256 + 1, /**< the Object role */
+      SourceFileRole,
+      SourceLineRole,
+      SourceColumnRole,
       UserRole                       /**< the UserRole, as defined by Qt */
     };
 }
