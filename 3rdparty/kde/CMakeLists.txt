@@ -18,6 +18,11 @@ set_target_properties(gammaray_kitemmodels PROPERTIES
   DEFINE_SYMBOL MAKE_KITEMMODELS_LIB
 )
 
+# MSVC or APPLE already contains build type in their abi
+if(MSVC OR APPLE)
+  set_target_properties(gammaray_kitemmodels PROPERTIES DEBUG_POSTFIX "")
+endif()
+
 install(TARGETS gammaray_kitemmodels EXPORT GammaRayTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ecm_generate_pri_file(BASE_NAME GammaRayKItemModels

@@ -135,7 +135,11 @@ void ProbeABI::setIsDebug(bool debug)
 
 bool ProbeABI::isDebugRelevant() const
 {
+#if defined(Q_OS_MACX)
+  return true;
+#else
   return compiler() == QLatin1String("MSVC");
+#endif
 }
 
 bool ProbeABI::isValid() const

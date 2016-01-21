@@ -15,6 +15,11 @@ if(Qt5Widgets_FOUND OR QT_QTGUI_FOUND)
 
   if(GAMMARAY_INSTALL_QT_LAYOUT)
     set_target_properties(gammaray_injector_style PROPERTIES OUTPUT_NAME gammaray_injector_style-${GAMMARAY_PROBE_ABI})
+
+    # MSVC or APPLE already contains build type in their abi
+    if(MSVC OR APPLE)
+      set_target_properties(gammaray_injector_style PROPERTIES DEBUG_POSTFIX "")
+    endif()
   endif()
 
   install(

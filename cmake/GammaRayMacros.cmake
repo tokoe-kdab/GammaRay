@@ -22,6 +22,11 @@ macro(gammaray_add_plugin _target_name _desktop_file)
 
   if(GAMMARAY_INSTALL_QT_LAYOUT)
     set_target_properties(${_target_name} PROPERTIES OUTPUT_NAME ${_target_name}-${GAMMARAY_PROBE_ABI})
+
+    # MSVC or APPLE already contains build type in their abi
+    if(MSVC OR APPLE)
+      set_target_properties(${_target_name} PROPERTIES DEBUG_POSTFIX "")
+    endif()
   endif()
 
   if(APPLE)

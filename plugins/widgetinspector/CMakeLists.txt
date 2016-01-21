@@ -20,18 +20,23 @@ target_link_libraries(gammaray_widgetinspector_plugin
 )
 
 # probe export actions
-add_library(gammaray_widget_export_actions SHARED
+add_library(gammaray_widget_export_actions MODULE
   widgetinspector_export_actions.cpp
   uiextractor.cpp
 )
 
 set_target_properties(gammaray_widget_export_actions PROPERTIES
   LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/${PROBE_PLUGIN_INSTALL_DIR}"
-  DEBUG_POSTFIX ""
+  PREFIX ""
 )
 
 if(GAMMARAY_INSTALL_QT_LAYOUT)
   set_target_properties(gammaray_widget_export_actions PROPERTIES OUTPUT_NAME gammaray_widget_export_actions-${GAMMARAY_PROBE_ABI})
+
+  # MSVC or APPLE already contains build type in their abi
+  if(MSVC OR APPLE)
+    set_target_properties(gammaray_widget_export_actions PROPERTIES DEBUG_POSTFIX "")
+  endif()
 endif()
 
 set(EXTRA_LIBS)

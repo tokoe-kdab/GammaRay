@@ -127,6 +127,11 @@ set_target_properties(gammaray_core PROPERTIES
   OUTPUT_NAME gammaray_core-${GAMMARAY_PROBE_ABI}
 )
 
+# MSVC or APPLE already contains build type in their abi
+if(MSVC OR APPLE)
+  set_target_properties(gammaray_core PROPERTIES DEBUG_POSTFIX "")
+endif()
+
 if(Qt5Core_FOUND)
   target_link_libraries(gammaray_core LINK_PUBLIC Qt5::Core LINK_PRIVATE Qt5::Gui)
 else()

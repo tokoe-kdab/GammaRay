@@ -51,10 +51,18 @@ namespace ProbeFinder {
 
 QString findProbe(const QString &baseName, const ProbeABI &probeAbi)
 {
+#if defined(GAMMARAY_INSTALL_QT_LAYOUT)
+  Q_UNUSED(baseName);
+#endif
   const QString probePath =
     Paths::probePath(probeAbi.id()) %
     QDir::separator() %
+#if defined(GAMMARAY_INSTALL_QT_LAYOUT)
+    QStringLiteral("libgammaray_probe-") %
+    probeAbi.id() %
+#else
     baseName %
+#endif
     Paths::libraryExtension();
 
   const QFileInfo fi(probePath);
@@ -94,14 +102,13 @@ QVector<ProbeABI> listProbeABIs()
   const QDir dir(Paths::probePath(QString()));
 #if defined(GAMMARAY_INSTALL_QT_LAYOUT)
   const QString filter = QStringLiteral("*gammaray_probe*");
-  ProbeABIDetector detector;
   foreach (const QFileInfo &abiId, dir.entryInfoList(QStringList(filter), QDir::Files)) {
     // OSX has broken QLibrary::isLibrary() - QTBUG-50446
     if (abiId.isSymLink() || (!QLibrary::isLibrary(abiId.fileName()) &&
                               !abiId.fileName().endsWith(Paths::libraryExtension(), Qt::CaseInsensitive))) {
       continue;
     }
-    const ProbeABI abi = detector.abiForExecutable(abiId.absoluteFilePath());
+    const ProbeABI abi = ProbeABI::fromString(abiId.completeBaseName().section(QStringLiteral("-"), 1));
     if (abi.isValid())
       abis.push_back(abi);
   }
